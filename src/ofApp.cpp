@@ -12,7 +12,7 @@ void ofApp::setup(){
 	tubeResolution.addListener(this, &ofApp::tubeResolutionChanged);
 	ringButton.addListener(this,&ofApp::ringButtonPressed);
 
-	gui.setup(); // most of the time you don't need a name
+	gui.setup();
 	gui.add(filled.setup("fill", false));
 	gui.add(radius.setup( "radius", 140, 10, 300 ));
 	gui.add(color.setup("color",ofColor(15,100,150),ofColor(0,0),ofColor(255,255)));
@@ -51,7 +51,7 @@ void ofApp::update(){
     for(int i = 0; i < server.getLastID(); i++){
         if( !server.isClientConnected(i) )continue;
         
-        server.send(i, "hi, you're connected on port:"+ofToString(server.getClientPort(i)) );
+        server.send(i, "hi. you're connected on port:"+ofToString(server.getClientPort(i))+"\n"+ofToString((int)(radius)));
     }
 }
 
