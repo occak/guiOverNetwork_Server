@@ -2,7 +2,6 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
-#include "ofxPocoNetwork.h"
 #include "ofxNetwork.h"
 
 class ofApp : public ofBaseApp{
@@ -29,13 +28,12 @@ public:
 
 	bool bHide;
 
-	ofxFloatSlider radius, rotation;
+	ofxFloatSlider radius, rotation, fps;
 	ofxColorSlider color;
 	ofxVec3Slider center;
 	ofxIntSlider tubeResolution;
 	ofxToggle filled;
 	ofxButton ringButton;
-	ofxLabel screenSize;
     ofSoundPlayer ring;
 
 	ofxPanel gui;

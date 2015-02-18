@@ -5,9 +5,10 @@
 void ofApp::setup(){
     
 	ofSetVerticalSync(true);
-    server.setup(8002);
+    server.setup(10002);
+    
+    server.setMessageDelimiter("\n");
 
-	// we add this listener before setting up so the initial circle resolution is correct
 	tubeResolution.addListener(this, &ofApp::tubeResolutionChanged);
 	ringButton.addListener(this,&ofApp::ringButtonPressed);
 
@@ -15,9 +16,8 @@ void ofApp::setup(){
 	gui.add(filled.setup("fill", false));
 	gui.add(radius.setup( "radius", 140, 10, 300 ));
 	gui.add(color.setup("color",ofColor(15,100,150),ofColor(0,0),ofColor(255,255)));
-	gui.add(tubeResolution.setup("tube res", 15, 3, 50));
+	gui.add(tubeResolution.setup("tube res", 30, 3, 50));
 	gui.add(ringButton.setup("ring"));
-	gui.add(screenSize.setup("screen size", ""));
     gui.add(rotation.setup("rotation", 1, -1, 1));
 
 	bHide = true;
@@ -47,11 +47,16 @@ void ofApp::ringButtonPressed(){
 //--------------------------------------------------------------
 void ofApp::update(){
 	cylinder.setResolution(tubeResolution, (int)tubeResolution/2, (int)tubeResolution/4);
+    
+    for(int i = 0; i < server.getLastID(); i++){
+        if( !server.isClientConnected(i) )continue;
+        
+        server.send(i, "hi, you're connected on port:"+ofToString(server.getClientPort(i)) );
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    
     
     ofPushMatrix();
     cam.begin();
@@ -69,6 +74,8 @@ void ofApp::draw(){
 	if( filled ){
         cylinder.draw();
 		ofFill();
+        ofSetColor(0, 25);
+        cylinder.drawWireframe();
  
 	}else{
         ofSetColor(0,0,0,0);
@@ -82,7 +89,11 @@ void ofApp::draw(){
     
     if( bHide ){
         gui.draw();
+        ofSetColor(ofColor::black);
+        ofDrawBitmapString("fps: "+ofToString(ofGetFrameRate()), 15, ofGetHeight()-20);
+        ofDrawBitmapString("Server Test\nPort:"+ofToString(server.getPort())+"\nConnected: "+ofToString(server.getLastID()), 15, ofGetHeight()-80);
     }
+    
 
 }
 
@@ -128,7 +139,6 @@ void ofApp::mouseReleased(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
-    screenSize = ofToString(w) + "x" + ofToString(h);
 }
 
 //--------------------------------------------------------------
